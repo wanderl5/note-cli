@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ site_title }}{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="/" class="site-title">{{ site_title }}</a>
+      </div>
+      <div id="search-shortcut-hint">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.099zm-5.242 1.156a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11"/></svg>
+        搜索
+        <kbd>Ctrl</kbd><kbd>K</kbd>
+      </div>
+      <!-- legacy sidebar search kept for JS wiring; hidden visually -->
+      <div style="display:none">
+        <input type="text" id="search-input" autocomplete="off">
+        <div id="search-results" class="search-results hidden"></div>
+      </div>
+      <nav class="nav-tree">
+        {% macro render_nav(nodes) %}
+          <ul>
+          {% for node in nodes %}
+            {% if node.children %}
+              <li class="nav-dir">
+                <span class="nav-dir-title{% if current_url is starting_with(node.url) %} active{% endif %}">
+                  {{ node.title }}
+                </span>
+                {{ self::render_nav(nodes=node.children) }}
+              </li>
+            {% else %}
+              <li class="nav-item{% if node.url == current_url %} active{% endif %}">
+                <a href="{{ node.url | default(value='/') }}">{{ node.title }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+          </ul>
+        {% endmacro %}
+        {{ self::render_nav(nodes=nav) }}
+      </nav>
+    </aside>
+    <main class="content">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+  <!-- Search modal -->
+  <div id="search-overlay" class="search-overlay hidden">
+    <div class="search-modal">
+      <div class="search-modal-input-wrap">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.099zm-5.242 1.156a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11"/></svg>
+        <input type="text" id="search-modal-input" placeholder="搜索… 支持 & || ! () 逻辑运算" autocomplete="off" spellcheck="false">
+        <span class="search-modal-esc">Esc</span>
+      </div>
+      <div id="search-modal-results"></div>
+      <div class="search-modal-footer">
+        <span><kbd>↑</kbd><kbd>↓</kbd> 导航</span>
+        <span><kbd>Enter</kbd> 打开</span>
+        <span><kbd>Esc</kbd> 关闭</span>
+        <span>支持：<kbd>&&</kbd> <kbd>||</kbd> <kbd>!</kbd> <kbd>()</kbd></span>
+      </div>
+    </div>
+  </div>
+  <script src="/static/search.js"></script>
+  <script src="/static/lightbox.js"></script>
+  <script src="/static/mermaid.min.js"></script>
+  <script>
+    if (typeof mermaid !== 'undefined') {
+      mermaid.initialize({ startOnLoad: false, theme: 'default' });
+      document.querySelectorAll('code.language-mermaid').forEach(function(el) {
+        var pre = el.parentElement;
+        var div = document.createElement('div');
+        div.className = 'mermaid';
+        div.textContent = el.textContent;
+        pre.replaceWith(div);
+      });
+      mermaid.run();
+    }
+  </script>
+</body>
+</html>

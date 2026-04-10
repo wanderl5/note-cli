@@ -1,0 +1,17 @@
+[site]
+title = "My Notes"
+base_url = "/"
+docs_dir = "../docs"
+dist_dir = "../dist"
+
+[path_map]
+"编程" = "coding"
+"操作系统" = "os"
+"工具" = "tools"
+"数据库" = "database"
+"中间件" = "middleware"
+"第三方库" = "libs"
+"办公软件" = "office"
+"资金基础" = "finance"
+"书单" = "books"
+"保健" = "health"

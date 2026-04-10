@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}{{ site_title }}{% endblock %}
+
+{% block content %}
+<div class="home">
+  <h1>{{ site_title }}</h1>
+  <p class="home-stats">共 {{ total_pages }} 篇笔记</p>
+  <div class="home-categories">
+    {% for cat in categories %}
+    <div class="category-card">
+      <h2><a href="{{ cat.url }}">{{ cat.title }}</a></h2>
+      <span class="count">{{ cat.count }} 篇</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
